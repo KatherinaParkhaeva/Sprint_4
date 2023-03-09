@@ -1,4 +1,4 @@
-import config.AppConfig;
+import constants.SiteUrl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -6,39 +6,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import pageObject.MainPage;
-
+import ru.yandex.praktikum.MainPage;
 import java.util.concurrent.TimeUnit;
-
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class FAQTest {
+    private final int questionNumber;
+    private final String answerText;
     private WebDriver driver;
-    private int questionNumber;
-    private String answerText;
 
-    public FAQTest (int questionNumber,String answerText){
-        this.questionNumber=questionNumber;
-        this.answerText=answerText;
+    public FAQTest(int questionNumber, String answerText) {
+        this.questionNumber = questionNumber;
+        this.answerText = answerText;
     }
 
-    @Before
-    public void websiteLaunch() {
-        driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-        driver.navigate().to(AppConfig.MAIN_PAGE_URL);
-    }
-
-    //для запуска в фф
-    /*@Before
-    public void websiteLaunch(){
-        driver=new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-        driver.navigate().to(AppConfig.MAIN_PAGE_URL);
-    }*/
-
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name="Сверка блока FAQ. Тестовые данные {0},{1},{2},{3},{4},{5},{6},{7}")
     public static Object[][] getItemFAQ() {
         return new Object[][]{
                 {0, "Сутки — 400 рублей. Оплата курьеру — наличными или картой."},
@@ -56,16 +39,31 @@ public class FAQTest {
         };
     }
 
+    //для запуска в фф
+    /*@Before
+    public void websiteLaunch(){
+        driver=new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+        driver.navigate().to(AppConfig.MAIN_PAGE_URL);
+    }*/
+
+    @Before
+    public void websiteLaunch() {
+        driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+        driver.navigate().to(SiteUrl.MAIN_PAGE_URL);
+    }
+
     @Test
-    public void checkQuestion(){
+    public void checkQuestion() {
         MainPage objMainPage = new MainPage(driver);
         objMainPage.clickCookieBtn();
         objMainPage.clickQuestionBtn(questionNumber);
-        assertEquals(answerText,objMainPage.getAnswerText(questionNumber));
+        assertEquals(answerText, objMainPage.getAnswerText(questionNumber));
     }
 
     @After
-    public void teardown(){
+    public void teardown() {
         driver.quit();
     }
 
